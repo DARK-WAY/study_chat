@@ -27,7 +27,7 @@ public class Server {
     }
 
     public synchronized void subscribe(ClientHandler clientHandler) {
-        broadcastMessage("В чат зашел: " + clientHandler.getUsername());
+        //broadcastMessage("В чат зашел: " + clientHandler.getUsername());
         clients.add(clientHandler);
     }
 
@@ -39,6 +39,15 @@ public class Server {
     public synchronized void broadcastMessage(String message) {
         for (ClientHandler c : clients) {
             c.sendMessage(message);
+        }
+    }
+    public synchronized void personalMessage(String message , String recipient, ClientHandler sendClient) {
+            for (ClientHandler c : clients) {
+            if( recipient.equals( c.getUsername())){
+                c.sendMessage(sendClient.getUsername() + ">>" + message);
+                sendClient.sendMessage(sendClient.getUsername() + ">>" + message);
+                break;
+            }
         }
     }
 }

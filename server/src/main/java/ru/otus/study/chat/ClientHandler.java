@@ -11,12 +11,12 @@ public class ClientHandler {
     private DataInputStream in;
     private DataOutputStream out;
 
-    private String username;
+    private String userName;
 
     private static int usersCount = 0;
 
     public String getUsername() {
-        return username;
+        return userName;
     }
 
     public ClientHandler(Server server, Socket socket) throws IOException {
@@ -24,21 +24,37 @@ public class ClientHandler {
         this.socket = socket;
         this.in = new DataInputStream(socket.getInputStream());
         this.out = new DataOutputStream(socket.getOutputStream());
+
+        this.userName = "user" + usersCount;
         usersCount++;
-        this.username = "user" + usersCount;
         new Thread(() -> {
             try {
                 System.out.println("Подключился новый клиент");
                 while (true) {
                     String message = in.readUTF();
+
                     if (message.startsWith("/")) {
                         if (message.equals("/exit")) {
                             sendMessage("/exitok");
                             break;
                         }
+                        // обращение к конкретному пользователю.
+                        if (message.startsWith("/w")) {
+                            String[] outMessage = message.split(" ", 3);
+                            System.out.println("Клиент " + this.userName + " прислал сообщение:" + outMessage[2]);
+                            server.personalMessage(outMessage[2], outMessage[1],this);
+                        }
+                        // пришло новое имя
+                        if (message.startsWith("/u")) {
+                            this.userName = message.substring(2, message.length()).trim();
+                            System.out.println("В чат зашел: " + this.userName);
+                            message = "В чат зашел: " + this.userName;
+                            server.broadcastMessage(userName + ": " + message);
+                        }
                         continue;
+
                     }
-                    server.broadcastMessage(username + ": " + message);
+                    server.broadcastMessage(userName + ": " + message);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
