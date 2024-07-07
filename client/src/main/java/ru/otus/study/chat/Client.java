@@ -10,12 +10,21 @@ public class Client {
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
+    private String userName;
+
+
 
     public Client() throws IOException {
         Scanner scanner = new Scanner(System.in);
+        System.out.println("Введите Ваше Имя");
+        this.userName = scanner.nextLine();
+        System.out.println("Введено Имя: " + this.userName);
+
         socket = new Socket("localhost", 8189);
         in = new DataInputStream(socket.getInputStream());
         out = new DataOutputStream(socket.getOutputStream());
+        out.writeUTF("/u " + this.userName);
+
         new Thread(() -> {
             try {
                 while (true) {
@@ -31,7 +40,9 @@ public class Client {
                 disconnect();
             }
         }).start();
+
         while (true) {
+
             String message = scanner.nextLine();
             out.writeUTF(message);
             if (message.equals("/exit")) {
