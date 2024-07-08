@@ -9,10 +9,10 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>hw22/client</module>
-        <module>hw22/server</module>
         <module>hw23/client_v1</module>
         <module>hw23/server_v1</module>
+        <module>hw22/client</module>
+        <module>hw22/server</module>
     </modules>
 
     <properties>
