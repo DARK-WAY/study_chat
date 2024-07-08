@@ -11,6 +11,7 @@ public class ClientHandler {
     private DataInputStream in;
     private DataOutputStream out;
     private String username;
+    private RolesUsers rolesUsers;
 
     public String getUsername() {
         return username;
@@ -19,6 +20,11 @@ public class ClientHandler {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public void setRolesUsers(RolesUsers rolesUsers) {this.rolesUsers = rolesUsers;}
+
+    public RolesUsers getRolesUsers() { return rolesUsers; }
+
 
     public ClientHandler(Server server, Socket socket) throws IOException {
         this.server = server;
@@ -30,7 +36,7 @@ public class ClientHandler {
                 System.out.println("Подключился новый клиент");
                 while (true) {
                     String message = in.readUTF();
-                    if (message.equals("/exit")) {
+                    if (message.equals("/exit ")) {
                         sendMessage("/exitok");
                         return;
                     }
@@ -64,6 +70,17 @@ public class ClientHandler {
                         if (message.equals("/exit")) {
                             sendMessage("/exitok");
                             break;
+                        }
+                        // Для пользователей с ролью ADMIN реализуйте возможность отключения пользователей от чата с помощью команды «/kick username»
+                        if (message.startsWith("/kick ")) {
+                            String[] elements = message.split(" ");
+                            if (elements.length != 2) {
+                                sendMessage("Неверный формат команды /kick");
+                                continue;
+                            }
+                            System.out.println(message + ": " + elements[0] + "," + elements[1]);
+                            server.disableUser(this, elements[1]);
+
                         }
                         continue;
                     }

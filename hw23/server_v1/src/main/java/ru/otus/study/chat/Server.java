@@ -57,4 +57,21 @@ public class Server {
         }
         return false;
     }
+
+    public synchronized void disableUser(ClientHandler user, String username) {
+        System.out.println("Роль= " + user.getRolesUsers());
+        if (user.getRolesUsers() == RolesUsers.ADMIN) {
+            System.out.println("Администратор " + user.getUsername() + " ищет клиента " + username);
+            for (ClientHandler c : clients) {
+                if (c.getUsername().equals(username)) {
+                    broadcastMessage("Администратор отключил : " + c.getUsername());
+                    //Отключить клиента
+                    clients.remove(c);
+                    c.disconnect();
+                }
+            }
+            return;
+        }
+        user.sendMessage("Отключать клиента может только администратор.");
+    }
 }
