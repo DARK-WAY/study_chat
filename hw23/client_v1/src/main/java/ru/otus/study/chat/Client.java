@@ -1,4 +1,4 @@
-package ru.otus.june.chat;
+package ru.otus.study.chat;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

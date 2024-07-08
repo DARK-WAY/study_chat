@@ -1,4 +1,4 @@
-package ru.otus.june.chat.server;
+package ru.otus.study.chat;
 
 import java.util.ArrayList;
 import java.util.List;
