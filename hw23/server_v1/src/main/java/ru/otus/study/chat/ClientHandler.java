@@ -21,9 +21,13 @@ public class ClientHandler {
         this.username = username;
     }
 
-    public void setRolesUsers(RolesUsers rolesUsers) {this.rolesUsers = rolesUsers;}
+    public void setRolesUsers(RolesUsers rolesUsers) {
+        this.rolesUsers = rolesUsers;
+    }
 
-    public RolesUsers getRolesUsers() { return rolesUsers; }
+    public RolesUsers getRolesUsers() {
+        return rolesUsers;
+    }
 
 
     public ClientHandler(Server server, Socket socket) throws IOException {
@@ -78,9 +82,8 @@ public class ClientHandler {
                                 sendMessage("Неверный формат команды /kick");
                                 continue;
                             }
-                            System.out.println(message + ": " + elements[0] + "," + elements[1]);
+                            System.out.println(message );
                             server.disableUser(this, elements[1]);
-
                         }
                         continue;
                     }
@@ -89,6 +92,7 @@ public class ClientHandler {
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
+                server.unsubscribe(this);
                 disconnect();
             }
         }).start();
@@ -103,7 +107,8 @@ public class ClientHandler {
     }
 
     public void disconnect() {
-        server.unsubscribe(this);
+        //server.unsubscribe(this);  - Удаляю и переношу finally ,
+        // чтобы не выдавалось дважды на печать, что клиент вышел из чата при принудительном отключении
         try {
             if (in != null) {
                 in.close();

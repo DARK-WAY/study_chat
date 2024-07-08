@@ -103,6 +103,7 @@ public class InMemoryAuthenticationProvider implements AuthenticationProvider {
         }
         users.add(new User(login, password, username, RolesUsers.USER));
         clientHandler.setUsername(username);
+        clientHandler.setRolesUsers(RolesUsers.USER);
         server.subscribe(clientHandler);
         clientHandler.sendMessage("/regok " + username);
         return true;

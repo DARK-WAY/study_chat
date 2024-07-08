@@ -58,16 +58,16 @@ public class Server {
         return false;
     }
 
-    public synchronized void disableUser(ClientHandler user, String username) {
-        System.out.println("Роль= " + user.getRolesUsers());
+    public synchronized void disableUser(ClientHandler user, String userToDelete) {
+        //System.out.println("Роль= " + user.getRolesUsers());
         if (user.getRolesUsers() == RolesUsers.ADMIN) {
-            System.out.println("Администратор " + user.getUsername() + " ищет клиента " + username);
+            //System.out.println("Администратор " + user.getUsername() + " ищет клиента для удаления " + userToDelete);
             for (ClientHandler c : clients) {
-                if (c.getUsername().equals(username)) {
+                if (c.getUsername().equals(userToDelete)) {
                     broadcastMessage("Администратор отключил : " + c.getUsername());
-                    //Отключить клиента
-                    clients.remove(c);
+                    System.out.println("Сервер отключает клиента " + userToDelete);
                     c.disconnect();
+                    break;
                 }
             }
             return;
