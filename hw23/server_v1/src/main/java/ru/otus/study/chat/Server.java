@@ -59,19 +59,18 @@ public class Server {
     }
 
     public synchronized void disableUser(ClientHandler user, String userToDelete) {
-        //System.out.println("Роль= " + user.getRolesUsers());
-        if (user.getRolesUsers() == RolesUsers.ADMIN) {
-            //System.out.println("Администратор " + user.getUsername() + " ищет клиента для удаления " + userToDelete);
-            for (ClientHandler c : clients) {
-                if (c.getUsername().equals(userToDelete)) {
-                    broadcastMessage("Администратор отключил : " + c.getUsername());
-                    System.out.println("Сервер отключает клиента " + userToDelete);
-                    c.disconnect();
-                    break;
-                }
-            }
+        if (user.getRolesUsers() != RolesUsers.ADMIN) {
+            user.sendMessage("Отключать клиента может только администратор.");
             return;
         }
-        user.sendMessage("Отключать клиента может только администратор.");
+        for (ClientHandler c : clients) {
+            if (c.getUsername().equals(userToDelete)) {
+                broadcastMessage("Администратор отключил : " + c.getUsername());
+                System.out.println("Сервер отключает клиента " + userToDelete);
+                c.disconnect();
+                return;
+            }
+        }
+        user.sendMessage("Указанный пользователь не найден.");
     }
 }
