@@ -8,11 +8,13 @@ public class InMemoryAuthenticationProvider implements AuthenticationProvider {
         private String login;
         private String password;
         private String username;
+        private RolesUsers rolesUsers;
 
-        public User(String login, String password, String username) {
+        public User(String login, String password, String username, RolesUsers rolesUsers ) {
             this.login = login;
             this.password = password;
             this.username = username;
+            this.rolesUsers = rolesUsers;
         }
     }
 
@@ -22,9 +24,9 @@ public class InMemoryAuthenticationProvider implements AuthenticationProvider {
     public InMemoryAuthenticationProvider(Server server) {
         this.server = server;
         this.users = new ArrayList<>();
-        this.users.add(new User("login1", "pass1", "bob"));
-        this.users.add(new User("login2", "pass2", "user2"));
-        this.users.add(new User("login3", "pass3", "user3"));
+        this.users.add(new User("login1", "pass1", "bob", RolesUsers.ADMIN));
+        this.users.add(new User("login2", "pass2", "user2", RolesUsers.USER));
+        this.users.add(new User("login3", "pass3", "user3", RolesUsers.USER));
     }
 
     @Override
@@ -32,6 +34,14 @@ public class InMemoryAuthenticationProvider implements AuthenticationProvider {
         System.out.println("Сервис аутентификации запущен: In-Memory режим");
     }
 
+    private RolesUsers getRoleByLoginAndPassword(String login, String password) {
+        for (User u : users) {
+            if (u.login.equals(login) && u.password.equals(password)) {
+                return u.rolesUsers;
+            }
+        }
+        return null;
+    }
     private String getUsernameByLoginAndPassword(String login, String password) {
         for (User u : users) {
             if (u.login.equals(login) && u.password.equals(password)) {
@@ -40,7 +50,6 @@ public class InMemoryAuthenticationProvider implements AuthenticationProvider {
         }
         return null;
     }
-
     private boolean isLoginAlreadyExist(String login) {
         for (User u : users) {
             if (u.login.equals(login)) {
@@ -70,7 +79,9 @@ public class InMemoryAuthenticationProvider implements AuthenticationProvider {
             clientHandler.sendMessage("Указанная учетная запись уже занята");
             return false;
         }
+        RolesUsers  roleUser = getRoleByLoginAndPassword(login, password);
         clientHandler.setUsername(authUsername);
+        clientHandler.setRolesUsers(roleUser);
         server.subscribe(clientHandler);
         clientHandler.sendMessage("/authok " + authUsername);
         return true;
@@ -90,8 +101,9 @@ public class InMemoryAuthenticationProvider implements AuthenticationProvider {
             clientHandler.sendMessage("Указанное имя пользователя уже занято");
             return false;
         }
-        users.add(new User(login, password, username));
+        users.add(new User(login, password, username, RolesUsers.USER));
         clientHandler.setUsername(username);
+        clientHandler.setRolesUsers(RolesUsers.USER);
         server.subscribe(clientHandler);
         clientHandler.sendMessage("/regok " + username);
         return true;

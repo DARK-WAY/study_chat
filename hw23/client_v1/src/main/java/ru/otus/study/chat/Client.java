@@ -41,7 +41,9 @@ public class Client {
         }).start();
         while (true) {
             String message = scanner.nextLine();
-            out.writeUTF(message);
+            if (!socket.isClosed()) {
+                out.writeUTF(message);
+            }
             if (message.equals("/exit")) {
                 break;
             }

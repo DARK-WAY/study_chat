@@ -11,6 +11,7 @@ public class ClientHandler {
     private DataInputStream in;
     private DataOutputStream out;
     private String username;
+    private RolesUsers rolesUsers;
 
     public String getUsername() {
         return username;
@@ -19,6 +20,15 @@ public class ClientHandler {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public void setRolesUsers(RolesUsers rolesUsers) {
+        this.rolesUsers = rolesUsers;
+    }
+
+    public RolesUsers getRolesUsers() {
+        return rolesUsers;
+    }
+
 
     public ClientHandler(Server server, Socket socket) throws IOException {
         this.server = server;
@@ -30,7 +40,7 @@ public class ClientHandler {
                 System.out.println("Подключился новый клиент");
                 while (true) {
                     String message = in.readUTF();
-                    if (message.equals("/exit")) {
+                    if (message.equals("/exit ")) {
                         sendMessage("/exitok");
                         return;
                     }
@@ -65,6 +75,16 @@ public class ClientHandler {
                             sendMessage("/exitok");
                             break;
                         }
+                        // Для пользователей с ролью ADMIN реализуйте возможность отключения пользователей от чата с помощью команды «/kick username»
+                        if (message.startsWith("/kick ")) {
+                            String[] elements = message.split(" ");
+                            if (elements.length != 2) {
+                                sendMessage("Неверный формат команды /kick");
+                                continue;
+                            }
+                            System.out.println(message );
+                            server.disableUser(this, elements[1]);
+                        }
                         continue;
                     }
                     server.broadcastMessage(username + ": " + message);
@@ -72,6 +92,7 @@ public class ClientHandler {
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
+                server.unsubscribe(this);
                 disconnect();
             }
         }).start();
@@ -86,7 +107,8 @@ public class ClientHandler {
     }
 
     public void disconnect() {
-        server.unsubscribe(this);
+        //server.unsubscribe(this);  - Удаляю и переношу finally ,
+        // чтобы не выдавалось дважды на печать, что клиент вышел из чата при принудительном отключении
         try {
             if (in != null) {
                 in.close();
