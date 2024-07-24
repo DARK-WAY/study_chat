@@ -3,19 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>ru.otus.study.chat</groupId>
+        <artifactId>study_chat</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
 
-    <groupId>ru.otus.study.chat</groupId>
-    <artifactId>study_chat</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <modules>
-        <module>hw23/client_v1</module>
-        <module>hw23/server_v1</module>
-        <module>hw22/client</module>
-        <module>hw22/server</module>
-        <module>hw25/client_v2</module>
-        <module>hw25/server_v2</module>
-    </modules>
+    <artifactId>client_v2</artifactId>
 
     <properties>
         <maven.compiler.source>22</maven.compiler.source>
