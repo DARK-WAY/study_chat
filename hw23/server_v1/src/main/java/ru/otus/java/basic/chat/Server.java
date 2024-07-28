@@ -1,4 +1,4 @@
-package ru.otus.java.basic.chat.hw23.server_v1;
+package ru.otus.java.basic.chat;
 
 import java.net.ServerSocket;
 import java.net.Socket;

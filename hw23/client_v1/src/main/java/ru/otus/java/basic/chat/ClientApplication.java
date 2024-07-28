@@ -1,4 +1,4 @@
-package ru.otus.java.basic.chat.hw22.client;
+package ru.otus.java.basic.chat;
 
 import java.io.IOException;
 

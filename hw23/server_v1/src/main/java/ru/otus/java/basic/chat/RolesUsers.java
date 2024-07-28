@@ -1,4 +1,4 @@
-package ru.otus.java.basic.chat.hw25.server_v2;
+package ru.otus.java.basic.chat;
 
 public enum RolesUsers {
     USER,

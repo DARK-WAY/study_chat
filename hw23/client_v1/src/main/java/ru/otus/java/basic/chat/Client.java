@@ -1,4 +1,4 @@
-package ru.otus.java.basic.chat.hw22.client;
+package ru.otus.java.basic.chat;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -10,27 +10,26 @@ public class Client {
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
-    private String userName;
-
-
 
     public Client() throws IOException {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Введите Ваше Имя");
-        this.userName = scanner.nextLine();
-        System.out.println("Введено Имя: " + this.userName);
-
         socket = new Socket("localhost", 8189);
         in = new DataInputStream(socket.getInputStream());
         out = new DataOutputStream(socket.getOutputStream());
-        out.writeUTF("/u " + this.userName);
-
         new Thread(() -> {
             try {
                 while (true) {
                     String message = in.readUTF();
                     if (message.equals("/exitok")) {
                         break;
+                    }
+                    if (message.startsWith("/authok ")) {
+                        System.out.println("Удалось успешно войти в чат под именем пользователя: " + message.split(" ")[1]);
+                        continue;
+                    }
+                    if (message.startsWith("/regok ")) {
+                        System.out.println("Удалось успешно пройти регистрацию и войти в чат под именем пользователя: " + message.split(" ")[1]);
+                        continue;
                     }
                     System.out.println(message);
                 }
@@ -40,11 +39,11 @@ public class Client {
                 disconnect();
             }
         }).start();
-
         while (true) {
-
             String message = scanner.nextLine();
-            out.writeUTF(message);
+            if (!socket.isClosed()) {
+                out.writeUTF(message);
+            }
             if (message.equals("/exit")) {
                 break;
             }
