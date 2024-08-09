@@ -4,6 +4,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClientHandler {
     private Server server;
@@ -11,7 +13,7 @@ public class ClientHandler {
     private DataInputStream in;
     private DataOutputStream out;
     private String username;
-    private RolesUsers rolesUsers;
+    private List<RolesUsers> rolesUsers = new ArrayList<>();
 
     public String getUsername() {
         return username;
@@ -21,14 +23,13 @@ public class ClientHandler {
         this.username = username;
     }
 
-    public void setRolesUsers(RolesUsers rolesUsers) {
-        this.rolesUsers = rolesUsers;
-    }
-
-    public RolesUsers getRolesUsers() {
+    public List<RolesUsers> getRolesUsers() {
         return rolesUsers;
     }
 
+    public void setRolesUsers(List<RolesUsers> rolesUsers) {
+        this.rolesUsers = rolesUsers;
+    }
 
     public ClientHandler(Server server, Socket socket) throws IOException {
         this.server = server;

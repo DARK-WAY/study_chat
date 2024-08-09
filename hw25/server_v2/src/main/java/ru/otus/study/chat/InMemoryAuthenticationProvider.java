@@ -68,7 +68,7 @@ public class InMemoryAuthenticationProvider implements AuthenticationProvider {
         return false;
     }
 
-    @Override
+    //@Override
     public synchronized boolean authenticate(ClientHandler clientHandler, String login, String password) {
         String authUsername = getUsernameByLoginAndPassword(login, password);
         if (authUsername == null) {
@@ -79,15 +79,16 @@ public class InMemoryAuthenticationProvider implements AuthenticationProvider {
             clientHandler.sendMessage("Указанная учетная запись уже занята");
             return false;
         }
-        RolesUsers  roleUser = getRoleByLoginAndPassword(login, password);
+        List<RolesUsers> roles = new ArrayList<>();
+        roles.add(getRoleByLoginAndPassword(login, password));
         clientHandler.setUsername(authUsername);
-        clientHandler.setRolesUsers(roleUser);
+        clientHandler.setRolesUsers(roles);
         server.subscribe(clientHandler);
         clientHandler.sendMessage("/authok " + authUsername);
         return true;
     }
 
-    @Override
+    //@Override
     public boolean registration(ClientHandler clientHandler, String login, String password, String username) {
         if (login.trim().length() < 3 || password.trim().length() < 6 || username.trim().length() < 1) {
             clientHandler.sendMessage("Логин 3+ символа, Пароль 6+ символов, Имя пользователя 1+ символ");
@@ -102,8 +103,10 @@ public class InMemoryAuthenticationProvider implements AuthenticationProvider {
             return false;
         }
         users.add(new User(login, password, username, RolesUsers.USER));
+        List<RolesUsers> roles = new ArrayList<>();
+        roles.add(RolesUsers.USER);
         clientHandler.setUsername(username);
-        clientHandler.setRolesUsers(RolesUsers.USER);
+        clientHandler.setRolesUsers(roles);
         server.subscribe(clientHandler);
         clientHandler.sendMessage("/regok " + username);
         return true;
