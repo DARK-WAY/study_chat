@@ -1,4 +1,4 @@
-package ru.otus.java.basic.chat;
+package ru.otus.study.chat;
 
 import java.sql.*;
 import java.util.ArrayList;
